@@ -11,6 +11,8 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
+const PAYMENT_TERMS = [1, 7, 14, 30] as const;
+
 export class AddressDto {
   @IsString()
   @IsNotEmpty()
@@ -42,9 +44,9 @@ export class ItemDto {
   @Min(0)
   price: number;
 
-  @IsNumber()
-  @Min(0)
-  total: number;
+  // @IsNumber()
+  // @Min(0)
+  // total: number;
 }
 
 export class CreateInvoiceDto {
@@ -52,15 +54,16 @@ export class CreateInvoiceDto {
   @IsISO8601()
   createdAt: string;
 
-  @IsString()
-  @IsISO8601()
-  paymentDue: string;
+  // @IsString()
+  // @IsISO8601()
+  // paymentDue: string;
 
   @IsString()
   @IsNotEmpty()
   description: string;
 
   @IsNumber()
+  @IsIn(PAYMENT_TERMS as readonly number[])
   paymentTerms: number;
 
   @IsString()
@@ -87,7 +90,7 @@ export class CreateInvoiceDto {
   @Type(() => ItemDto)
   items: ItemDto[];
 
-  @IsNumber()
-  @Min(0)
-  total: number;
+  // @IsNumber()
+  // @Min(0)
+  // total: number;
 }
