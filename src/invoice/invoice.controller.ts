@@ -27,23 +27,32 @@ export class InvoiceController {
     return this.invoiceService.create(createInvoiceDto, userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.invoiceService.findAll();
+  findAll(@CurrentUserId() userId: string) {
+    console.log(userId, 'userId');
+    return this.invoiceService.findAll(userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.invoiceService.findOne(+id);
+    return this.invoiceService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
-    return this.invoiceService.update(+id, updateInvoiceDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateInvoiceDto: UpdateInvoiceDto,
+    @CurrentUserId() userId: string,
+  ) {
+    return this.invoiceService.update(id, updateInvoiceDto, userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.invoiceService.remove(+id);
+  remove(@Param('id') id: string, @CurrentUserId() userId: string) {
+    return this.invoiceService.remove(id, userId);
   }
 }
