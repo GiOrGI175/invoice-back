@@ -18,7 +18,11 @@ export class InvoiceService {
     @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
 
-  async create(createInvoiceDto: CreateInvoiceDto, userId: string) {
+  async create(
+    createInvoiceDto: CreateInvoiceDto,
+    userId: string,
+    status: string,
+  ) {
     const user = await this.userModel.findById(userId);
 
     if (!user) {
@@ -54,6 +58,7 @@ export class InvoiceService {
       items: itemsWithTotals,
       total: invoiceTotal,
       user: user._id,
+      status: status,
     });
 
     await newInvoice.save();

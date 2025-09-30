@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUserId } from 'src/auth/decorators/current-user-id.decorator';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { CurrentUserId } from 'src/common/decorators/current-user-id.decorator';
+import { CurrentHeader } from 'src/common/decorators/current-header.decorator';
 
 @Controller('invoice')
 export class InvoiceController {
@@ -23,8 +25,11 @@ export class InvoiceController {
   create(
     @Body() createInvoiceDto: CreateInvoiceDto,
     @CurrentUserId() userId: string,
+    @CurrentHeader('x-status') xStatus?: string,
   ) {
-    return this.invoiceService.create(createInvoiceDto, userId);
+    const status = xStatus?.toLowerCase() === 'draft' ? 'draft' : 'pending';
+
+    return this.invoiceService.create(createInvoiceDto, userId, status);
   }
 
   @UseGuards(JwtAuthGuard)
